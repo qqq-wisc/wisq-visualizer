@@ -28,9 +28,9 @@ function tileToName(tile: Tile): React.JSX.Element {
         case(TileTypes.Empty):
             return <></>;
         case(TileTypes.Qubit):
-            return <>Q<sub>{tile.id}</sub></>;
+            return <>Q<sub>{tile.id ?? ""}</sub></>;
         case(TileTypes.Magic):
-            return <>M<sub>{tile.id}</sub></>;
+            return <>M<sub>{tile.id ?? ""}</sub></>;
         case(TileTypes.CX):
             return <>{tile.id}</>;
         case(TileTypes.T):

@@ -8,7 +8,7 @@ export enum TileTypes {
 
 export interface Tile {
     type: TileTypes;
-    id: number;
+    id: number | null;
 }
 
 export class TileLayout {
@@ -24,5 +24,9 @@ export class TileLayout {
         this.width = width;
         this.height = height;
         this.matrix = Array.from({length: height}, () => Array(width).fill({type: TileTypes.Empty, id: 0}));
+    }
+
+    setTile(x: number, y: number, tile: Tile): void {
+        this.matrix[y][x] = tile;
     }
 }
