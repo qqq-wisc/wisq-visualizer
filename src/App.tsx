@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import QubitGrid from './components/qubitGrid'
+import QubitGrid from './components/QubitGrid'
 import { TileLayout } from './types/TileLayout'
 
 function App() {
