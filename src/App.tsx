@@ -56,7 +56,11 @@ function App() {
 
   // resolve the mapping and routing promise
   useEffect(() => {
-    fetch("src/assets/out.json")
+    fetch("/QC-Vis/out.json")
+      .then((response) => {
+        console.log(response);
+        return response;
+      })
       .then((response) => response.json() as Promise<MappingAndRouting>)
       .then((result) => {
         handleMappingAndRoutingUpdate(result);
@@ -65,6 +69,7 @@ function App() {
       .catch((err) => {
         setError(err);
         setLoading(false);
+        console.log(err);
         console.log("no");
       });
   }, []);
