@@ -1,5 +1,5 @@
 import React from "react";
-import { Tile, TileLayout, TileTypes } from "../types/TileLayout";
+import { TileLayout } from "../types/TileLayout";
 import TileElement from "./TileElement";
 
 interface QubitGridProperties {
