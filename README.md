@@ -5,6 +5,7 @@ This project is a visualizer for the [wisq](https://github.com/qqq-wisc/wisq/tre
 * Only cx and t gates are distinct. Tdg gates are given the same color as t gates.
 * Currently all qubits in the mapping are shown at every step. I should only show the Qubits required in the step.
 * Testers are very lacking. Although the code is working, it would be good to make some more tests.
+* It has only been used on two circuites. I should try it using a several different circuits and architectures to iron out any problems.
 
 ## Ideas for future additions
 * Highlight QASM in a file at the step.
