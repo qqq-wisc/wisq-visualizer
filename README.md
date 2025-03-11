@@ -1,54 +1,20 @@
-# React + TypeScript + Vite
+# wisq Quantum Circuit Visualizer
+This project is a visualizer for the [wisq](https://github.com/qqq-wisc/wisq/tree/main?tab=readme-ov-file) quantum QASM compiler. Please checkout the [gh-pages](https://psdecabooter.github.io/QC-Vis/) if you want to use it in action!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Issues with the current implementation
+* Only cx and t gates are distinct. Tdg gates are given the same color as t gates.
+* Currently all qubits in the mapping are shown at every step. I should only show the Qubits required in the step.
+* Testers are very lacking. Although the code is working, it would be good to make some more tests.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Ideas for future additions
+* Highlight QASM in a file at the step.
+  * I could have a code view to the side which shows the QASM code, and then highlight the rows based on the current pathing shown.
+  * I would need the compiler to include unitary operations in the output instead of just 2-qubit operations.
+* Show the control and target qubits in operations like cx.
+  * [LSC](https://latticesurgery.com/online-compiler) does this by having 'stitches.' A flat and a serrated edge which are then connected to the path between them.
+  * I could either use an explicit identifier on the edge tiles: C<sub>2</sub> - 2 - 2 - 2 - T<sub>2</sub>
+  * Or I could highlight edges.
+* Show a graph as well as a grid view.
+* Could this become somethign like a vs-code extension instead of a website?
+  * Someone installs the package or extension, then it hot reloads whenever they save their QASM file.
+  * Runs on the users local host, i.e. jupyter notebook.
