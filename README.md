@@ -1,5 +1,5 @@
 # wisq Quantum Circuit Visualizer
-This project is a visualizer for the [wisq](https://github.com/qqq-wisc/wisq/tree/main?tab=readme-ov-file) quantum QASM compiler. Please checkout the [gh-pages](https://psdecabooter.github.io/QC-Vis/) if you want to use it in action!
+This project is a visualizer for the [wisq](https://github.com/qqq-wisc/wisq/tree/main?tab=readme-ov-file) quantum QASM compiler. Please checkout the [gh-pages](https://qqq-wisc.github.io/wisq-visualizer/) if you want to use it in action!
 
 ## Issues with the current implementation
 * Only cx and t gates are distinct. Tdg gates are given the same color as t gates.
