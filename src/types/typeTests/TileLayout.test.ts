@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { TileLayout, Tile, TileTypes } from "../TileLayout";
+import { TileLayout, Tile, TileTypes, PathTypes } from "../TileLayout";
 
 test("Test Constructor Blank Tile", () => {
   const height: number = 4;
@@ -7,8 +7,9 @@ test("Test Constructor Blank Tile", () => {
   const ResultLayout: TileLayout = new TileLayout(width, height);
   const TargetTile: Tile = {
     tileType: TileTypes.Empty,
+    pathType: PathTypes.default,
     id: 0,
-  };
+  } as Tile;
 
   // make sure that the layout contains the blank tile
   expect(ResultLayout.matrix[0][0]).toEqual(TargetTile);

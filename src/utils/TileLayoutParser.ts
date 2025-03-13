@@ -1,7 +1,7 @@
 import { Routing, Architecture, Mapping } from "../types/MappingAndRouting";
 import { TileLayout, Tile, TileTypes, PathTypes } from "../types/TileLayout";
 
-interface coordinates {
+export interface Coordinates {
   x: number;
   y: number;
 }
@@ -14,7 +14,7 @@ export function tileLayoutFromRouting(
   let layout: TileLayout = new TileLayout(arch.width, arch.height);
 
   // generates the base from the mapping and architecture
-  generateBase(layout, arch, map);
+  generateBase(layout, arch);
 
   // generate routing
   for (const route of routing) {
@@ -65,11 +65,7 @@ export function tileLayoutFromRouting(
   return layout;
 }
 
-function generateBase(
-  layout: TileLayout,
-  arch: Architecture,
-  map: Mapping
-): void {
+function generateBase(layout: TileLayout, arch: Architecture): void {
   /*
     // Fill in qubits from architecture 
     for (const qubitLoc of arch.alg_qubits) {
@@ -102,16 +98,16 @@ function generateBase(
   }
 }
 
-function locaitonToCoordinate(
+export function locaitonToCoordinate(
   location: number,
   arch: Architecture
-): coordinates {
+): Coordinates {
   const x_cord: number = location % arch.width;
   const y_cord: number = Math.floor(location / arch.width);
-  return { x: x_cord, y: y_cord } as coordinates;
+  return { x: x_cord, y: y_cord } as Coordinates;
 }
 
-function findPathType(
+export function findPathType(
   pathLoc: number,
   qubitIdentifiers: number[],
   arch: Architecture,
