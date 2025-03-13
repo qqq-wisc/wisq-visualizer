@@ -56,7 +56,7 @@ function App() {
 
   // resolve the mapping and routing promise
   useEffect(() => {
-    fetch("/QC-Vis/out.json")
+    fetch("/wisq-visualizer/out.json")
       .then((response) => {
         console.log(response);
         return response;

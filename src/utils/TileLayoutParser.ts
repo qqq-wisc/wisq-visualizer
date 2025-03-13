@@ -29,7 +29,7 @@ export function tileLayoutFromRouting(
           tileType = TileTypes.T;
           break;
         case "tdg":
-          tileType = TileTypes.T;
+          tileType = TileTypes.TDG;
           break;
         default:
           break;

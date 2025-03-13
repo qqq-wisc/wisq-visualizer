@@ -18,6 +18,8 @@ function tileToColor(tile: Tile): string {
       return "bg-green-600";
     case TileTypes.T:
       return "bg-yellow-500";
+    case TileTypes.TDG:
+      return "bg-yellow-200";
     default:
       return "bg-white";
   }
@@ -42,6 +44,8 @@ function tileToName(tile: Tile): React.JSX.Element {
     case TileTypes.CX:
       return <>{tile.id}</>;
     case TileTypes.T:
+      return <>{tile.id}</>;
+    case TileTypes.TDG:
       return <>{tile.id}</>;
     default:
       return <></>;
