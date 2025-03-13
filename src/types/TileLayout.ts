@@ -7,8 +7,15 @@ export enum TileTypes {
   TDG,
 }
 
+export enum PathTypes {
+  control,
+  target,
+  default,
+}
+
 export interface Tile {
-  type: TileTypes;
+  tileType: TileTypes;
+  pathType: PathTypes;
   id: number | null;
 }
 
@@ -25,7 +32,11 @@ export class TileLayout {
     this.width = width;
     this.height = height;
     this.matrix = Array.from({ length: height }, () =>
-      Array(width).fill({ type: TileTypes.Empty, id: 0 })
+      Array(width).fill({
+        tileType: TileTypes.Empty,
+        pathType: PathTypes.default,
+        id: 0,
+      } as Tile)
     );
   }
 

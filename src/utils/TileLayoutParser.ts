@@ -1,5 +1,5 @@
 import { Routing, Architecture, Mapping } from "../types/MappingAndRouting";
-import { TileLayout, Tile, TileTypes } from "../types/TileLayout";
+import { TileLayout, Tile, TileTypes, PathTypes } from "../types/TileLayout";
 
 interface coordinates {
   x: number;
@@ -18,8 +18,26 @@ export function tileLayoutFromRouting(
 
   // generate routing
   for (const route of routing) {
+    for (const qubitIdentifier of route.qubits) {
+      const { x, y } = locaitonToCoordinate(map[String(qubitIdentifier)], arch);
+      const qubitTile: Tile = {
+        tileType: TileTypes.Qubit,
+        id: qubitIdentifier,
+      } as Tile;
+      layout.setTile(x, y, qubitTile);
+    }
     for (const pathLoc of route.path) {
       const { x, y } = locaitonToCoordinate(pathLoc, arch);
+
+      // get the path type
+      const pathType: PathTypes = findPathType(
+        pathLoc,
+        route.qubits,
+        arch,
+        map
+      );
+
+      // Get the tile type
       let tileType: TileTypes = TileTypes.Empty;
       switch (route.op) {
         case "cx":
@@ -34,7 +52,12 @@ export function tileLayoutFromRouting(
         default:
           break;
       }
-      const pathTile: Tile = { type: tileType, id: route.id };
+
+      const pathTile: Tile = {
+        tileType: tileType,
+        pathType: pathType,
+        id: route.id,
+      } as Tile;
       layout.setTile(x, y, pathTile);
     }
   }
@@ -61,16 +84,20 @@ function generateBase(
     We want to use the mapping keys for id's, which means that we cannot just fill it in before
     This rewrites qubits to ensure that the used qubits contain their id for subscripting
     */
-  for (const key in map) {
-    const { x, y } = locaitonToCoordinate(map[key], arch);
-    const qubitTile: Tile = { type: TileTypes.Qubit, id: Number(key) } as Tile;
-    layout.setTile(x, y, qubitTile);
-  }
+  // for (const key in map) {
+  //   const { x, y } = locaitonToCoordinate(map[key], arch);
+  //   const qubitTile: Tile = { type: TileTypes.Qubit, id: Number(key) } as Tile;
+  //   layout.setTile(x, y, qubitTile);
+  // }
 
   // Fill in magic states from architecture
   for (const magic_loc of arch.magic_states) {
     const { x, y } = locaitonToCoordinate(magic_loc, arch);
-    const magicTile: Tile = { type: TileTypes.Magic, id: null };
+    const magicTile: Tile = {
+      tileType: TileTypes.Magic,
+      pathType: PathTypes.default,
+      id: null,
+    } as Tile;
     layout.setTile(x, y, magicTile);
   }
 }
@@ -82,4 +109,34 @@ function locaitonToCoordinate(
   const x_cord: number = location % arch.width;
   const y_cord: number = Math.floor(location / arch.width);
   return { x: x_cord, y: y_cord } as coordinates;
+}
+
+function findPathType(
+  pathLoc: number,
+  qubitIdentifiers: number[],
+  arch: Architecture,
+  map: Mapping
+): PathTypes {
+  const { x: path_x, y: path_y } = locaitonToCoordinate(pathLoc, arch);
+  for (const qubitIdentifier of qubitIdentifiers) {
+    // find the coordinates of the qubit
+    const qubitLocation: number = map[String(qubitIdentifier)];
+    const { x: qubit_x, y: qubit_y } = locaitonToCoordinate(
+      qubitLocation,
+      arch
+    );
+
+    // make sure it is on the same x and their y is within 1 tile
+    const vertical_close: boolean = Math.abs(qubit_y - path_y) === 1;
+    if (path_x === qubit_x && vertical_close) {
+      return PathTypes.control;
+    }
+
+    // make sure it is on the same y and their x is within 1 tile
+    const horizontal_close: boolean = Math.abs(qubit_x - path_x) === 1;
+    if (path_y === qubit_y && horizontal_close) {
+      return PathTypes.target;
+    }
+  }
+  return PathTypes.default;
 }

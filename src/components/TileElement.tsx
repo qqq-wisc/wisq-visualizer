@@ -1,5 +1,5 @@
 import React from "react";
-import { Tile, TileTypes } from "../types/TileLayout";
+import { PathTypes, Tile, TileTypes } from "../types/TileLayout";
 
 interface TileProperties {
   tile: Tile;
@@ -7,7 +7,7 @@ interface TileProperties {
 }
 
 function tileToColor(tile: Tile): string {
-  switch (tile.type) {
+  switch (tile.tileType) {
     case TileTypes.Empty:
       return "bg-white";
     case TileTypes.Qubit:
@@ -26,7 +26,7 @@ function tileToColor(tile: Tile): string {
 }
 
 function tileToName(tile: Tile): React.JSX.Element {
-  switch (tile.type) {
+  switch (tile.tileType) {
     case TileTypes.Empty:
       return <></>;
     case TileTypes.Qubit:
@@ -42,10 +42,34 @@ function tileToName(tile: Tile): React.JSX.Element {
         </>
       );
     case TileTypes.CX:
+      if (tile.pathType === PathTypes.control)
+        return (
+          <>
+            C<sub>{tile.id}</sub>
+          </>
+        );
+      if (tile.pathType === PathTypes.target)
+        return (
+          <>
+            T<sub>{tile.id}</sub>
+          </>
+        );
       return <>{tile.id}</>;
     case TileTypes.T:
+      if (tile.pathType === PathTypes.control)
+        return (
+          <>
+            C<sub>{tile.id}</sub>
+          </>
+        );
       return <>{tile.id}</>;
     case TileTypes.TDG:
+      if (tile.pathType === PathTypes.control)
+        return (
+          <>
+            C<sub>{tile.id}</sub>
+          </>
+        );
       return <>{tile.id}</>;
     default:
       return <></>;

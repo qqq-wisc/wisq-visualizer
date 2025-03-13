@@ -1,24 +1,23 @@
-
 export interface MappingAndRouting {
-    map: Mapping,
-    steps: Routing[][],
-    arch: Architecture,
+  map: Mapping;
+  steps: Routing[][];
+  arch: Architecture;
 }
 
 export interface Mapping {
-    [key: string]: number,
+  [key: string]: number;
 }
 
 export interface Routing {
-    id: number,
-    op: string,
-    qubits: number[],
-    path: number[],
+  id: number;
+  op: string;
+  qubits: number[];
+  path: number[];
 }
 
 export interface Architecture {
-    height: number,
-    width: number,
-    alg_qubits: number[],
-    magic_states: number[],
+  height: number;
+  width: number;
+  alg_qubits: number[];
+  magic_states: number[];
 }
