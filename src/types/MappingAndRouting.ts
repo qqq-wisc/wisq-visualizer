@@ -21,3 +21,9 @@ export interface Architecture {
   alg_qubits: number[];
   magic_states: number[];
 }
+
+// Used to save uploaded files
+export interface MRFile {
+  mappingAndRouting: MappingAndRouting;
+  name: string;
+}

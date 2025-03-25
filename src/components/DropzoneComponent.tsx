@@ -1,13 +1,17 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { MappingAndRouting } from "../types/MappingAndRouting";
+import { MappingAndRouting, MRFile } from "../types/MappingAndRouting";
 
 interface DropzoneProperties {
-  onUpload: (mappingAndRouting: MappingAndRouting) => void;
+  onUpload: (newFile: MRFile) => void;
+  onLayoutNameChange: (newName: string) => void;
 }
 
 // This hook is almost all AI, I just wanted an out of the box solution
-const DropzoneComponent: React.FC<DropzoneProperties> = ({ onUpload }) => {
+const DropzoneComponent: React.FC<DropzoneProperties> = ({
+  onUpload,
+  onLayoutNameChange,
+}) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     // Process the uploaded file
     acceptedFiles.forEach((file) => {
@@ -21,8 +25,12 @@ const DropzoneComponent: React.FC<DropzoneProperties> = ({ onUpload }) => {
         const fileContent = reader.result as string;
         try {
           const jsonData: MappingAndRouting = JSON.parse(fileContent);
-
-          onUpload(jsonData);
+          const newFile: MRFile = {
+            mappingAndRouting: jsonData,
+            name: file.name,
+          } as MRFile;
+          onUpload(newFile);
+          onLayoutNameChange(newFile.name);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
@@ -43,14 +51,10 @@ const DropzoneComponent: React.FC<DropzoneProperties> = ({ onUpload }) => {
   return (
     <div
       {...getRootProps()}
-      style={{
-        border: "2px dashed #007bff",
-        padding: "20px",
-        textAlign: "center",
-      }}
+      className="border-2 border-dashed border-color-black p-5 text-center cursor-pointer"
     >
       <input {...getInputProps()} />
-      <p>Drag 'n' drop a JSON file here, or click to select one</p>
+      <p>Drop your own file here</p>
     </div>
   );
 };
