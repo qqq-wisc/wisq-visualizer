@@ -14,7 +14,7 @@ export function tileLayoutFromRouting(
   let layout: TileLayout = new TileLayout(arch.width, arch.height);
 
   // generates the base from the mapping and architecture
-  generateBase(layout, arch);
+  generateBase(layout, arch, map);
 
   // generate routing
   for (const route of routing) {
@@ -65,26 +65,34 @@ export function tileLayoutFromRouting(
   return layout;
 }
 
-function generateBase(layout: TileLayout, arch: Architecture): void {
+function generateBase(
+  layout: TileLayout,
+  arch: Architecture,
+  map: Mapping
+): void {
   /*
-    // Fill in qubits from architecture 
-    for (const qubitLoc of arch.alg_qubits) {
-        const {x, y} = locaitonToCoordinate(qubitLoc, arch);
-        const qubitTile: Tile = {type: TileTypes.Qubit, id: null}
-        layout.setTile(x, y, qubitTile);
-    }
-    */
+  // Fill in qubits from architecture
+  for (const qubitLoc of arch.alg_qubits) {
+    const { x, y } = locaitonToCoordinate(qubitLoc, arch);
+    const qubitTile: Tile = { tileType: TileTypes.Qubit, pathType: PathTypes.default, id: null } as Tile;
+    layout.setTile(x, y, qubitTile);
+  }
+  */
 
   /*
     The problem is that the locations in architecture are the values of keys in the mapping
     We want to use the mapping keys for id's, which means that we cannot just fill it in before
     This rewrites qubits to ensure that the used qubits contain their id for subscripting
     */
-  // for (const key in map) {
-  //   const { x, y } = locaitonToCoordinate(map[key], arch);
-  //   const qubitTile: Tile = { type: TileTypes.Qubit, id: Number(key) } as Tile;
-  //   layout.setTile(x, y, qubitTile);
-  // }
+  for (const key in map) {
+    const { x, y } = locaitonToCoordinate(map[key], arch);
+    const qubitTile: Tile = {
+      tileType: TileTypes.Qubit,
+      pathType: PathTypes.default,
+      id: Number(key),
+    } as Tile;
+    layout.setTile(x, y, qubitTile);
+  }
 
   // Fill in magic states from architecture
   for (const magic_loc of arch.magic_states) {
