@@ -3,21 +3,11 @@ import "./App.css";
 import QubitGrid from "./components/QubitGrid";
 import { TileLayout } from "./types/TileLayout";
 import { tileLayoutFromRouting } from "./utils/TileLayoutParser";
-import { MappingAndRouting, MRFile } from "./types/MappingAndRouting";
-import DropzoneComponent from "./components/DropzoneComponent";
-import LayoutSelector from "./components/LayoutSelector";
+import { MappingAndRouting } from "./types/MappingAndRouting";
 import SliderComponent from "./components/SliderComponent";
 import LayoutSelectionBar from "./components/LayoutSelectionBar";
 
 function App() {
-  // hold uploaded pathings
-  const [uploadedFiles, setUploadedPaths] = useState<{ [key: string]: MRFile }>(
-    {}
-  );
-  const handlePathUpload = (newFile: MRFile) => {
-    setUploadedPaths((prev) => ({ ...prev, [newFile.name]: newFile }));
-    handleMappingAndRoutingUpdate(newFile.mappingAndRouting);
-  };
 
   // hold the slider state
   const [layerMax, setLayerMax] = useState<number>(0);
