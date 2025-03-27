@@ -128,49 +128,55 @@ export function setPathTypes(
 ): void {
   const { x: path_x, y: path_y } = locaitonToCoordinate(tileLocation, arch);
 
-  // Check only the qubits in the path
-  for (const qubitIdentifier of qubitIdentifiers) {
-    // find the coordinates of the qubit
-    const qubitLocation: number = map[String(qubitIdentifier)];
-    const { x: qubit_x, y: qubit_y } = locaitonToCoordinate(
-      qubitLocation,
-      arch
-    );
+  if (qubitIdentifiers.length == 0) return;
 
-    // Check if qubit is above the tile
-    if (qubit_x === path_x && qubit_y === path_y - 1) {
-      // Change upper border of the path tile to control
-      tileLayout.getTile(path_x, path_y).topType = PathTypes.control;
-      // Change lower border of the qubit tile to control
-      tileLayout.getTile(qubit_x, qubit_y).bottomType = PathTypes.control;
-      continue;
-    }
+  const controlIdentifier: number = qubitIdentifiers[0];
+  // find the coordinates of the qubit
+  const controlLocation: number = map[String(controlIdentifier)];
+  const { x: cqubit_x, y: cqubit_y } = locaitonToCoordinate(
+    controlLocation,
+    arch
+  );
 
-    // Check if qubit is below the tile
-    if (qubit_x === path_x && qubit_y === path_y + 1) {
-      // Change upper border of the path tile to control
-      tileLayout.getTile(path_x, path_y).bottomType = PathTypes.control;
-      // Change lower border of the qubit tile to control
-      tileLayout.getTile(qubit_x, qubit_y).topType = PathTypes.control;
-      continue;
-    }
+  // Check if qubit is above the tile
+  if (cqubit_x === path_x && cqubit_y === path_y - 1) {
+    // Change upper border of the path tile to control
+    tileLayout.getTile(path_x, path_y).topType = PathTypes.control;
+    // Change lower border of the qubit tile to control
+    tileLayout.getTile(cqubit_x, cqubit_y).bottomType = PathTypes.control;
+  }
 
-    // Check if qubit is to the left of the tile
-    if (qubit_x === path_x - 1 && qubit_y === path_y) {
-      // Change upper border of the path tile to control
-      tileLayout.getTile(path_x, path_y).leftType = PathTypes.target;
-      // Change lower border of the qubit tile to control
-      tileLayout.getTile(qubit_x, qubit_y).rightType = PathTypes.target;
-      continue;
-    }
+  // Check if qubit is below the tile
+  if (cqubit_x === path_x && cqubit_y === path_y + 1) {
+    // Change upper border of the path tile to control
+    tileLayout.getTile(path_x, path_y).bottomType = PathTypes.control;
+    // Change lower border of the qubit tile to control
+    tileLayout.getTile(cqubit_x, cqubit_y).topType = PathTypes.control;
+  }
 
-    // Check if qubit is to the right of the tile
-    if (qubit_x === path_x + 1 && qubit_y === path_y) {
-      // Change upper border of the path tile to control
-      tileLayout.getTile(path_x, path_y).rightType = PathTypes.target;
-      // Change lower border of the qubit tile to control
-      tileLayout.getTile(qubit_x, qubit_y).leftType = PathTypes.target;
-      continue;
-    }
+  if (qubitIdentifiers.length == 1) return;
+
+  const targetIdentifier: number = qubitIdentifiers[1];
+  // find the coordinates of the qubit
+  const targetLocation: number = map[String(targetIdentifier)];
+  const { x: tqubit_x, y: tqubit_y } = locaitonToCoordinate(
+    targetLocation,
+    arch
+  );
+
+  // Check if qubit is to the left of the tile
+  if (tqubit_x === path_x - 1 && tqubit_y === path_y) {
+    // Change upper border of the path tile to control
+    tileLayout.getTile(path_x, path_y).leftType = PathTypes.target;
+    // Change lower border of the qubit tile to control
+    tileLayout.getTile(tqubit_x, tqubit_y).rightType = PathTypes.target;
+  }
+
+  // Check if qubit is to the right of the tile
+  if (tqubit_x === path_x + 1 && tqubit_y === path_y) {
+    // Change upper border of the path tile to control
+    tileLayout.getTile(path_x, path_y).rightType = PathTypes.target;
+    // Change lower border of the qubit tile to control
+    tileLayout.getTile(tqubit_x, tqubit_y).leftType = PathTypes.target;
   }
 }

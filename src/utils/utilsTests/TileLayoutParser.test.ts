@@ -141,7 +141,7 @@ test("Find path type test", () => {
   const testMapping: Mapping = {
     "0": 6,
   } as Mapping;
-  const testQubitIdentifiers: number[] = [0];
+  const testQubitIdentifiers: number[] = [0, 0];
   const testLayout: TileLayout = new TileLayout(5, 5);
   const { x: qubit_x, y: qubit_y } = locaitonToCoordinate(
     testQubitLoc,
