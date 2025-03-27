@@ -15,7 +15,10 @@ export enum PathTypes {
 
 export interface Tile {
   tileType: TileTypes;
-  pathType: PathTypes;
+  topType: PathTypes;
+  bottomType: PathTypes;
+  leftType: PathTypes;
+  rightType: PathTypes;
   id: number | null;
 }
 
@@ -34,7 +37,10 @@ export class TileLayout {
     this.matrix = Array.from({ length: height }, () =>
       Array(width).fill({
         tileType: TileTypes.Empty,
-        pathType: PathTypes.default,
+        topType: PathTypes.default,
+        bottomType: PathTypes.default,
+        leftType: PathTypes.default,
+        rightType: PathTypes.default,
         id: 0,
       } as Tile)
     );
@@ -42,5 +48,9 @@ export class TileLayout {
 
   setTile(x: number, y: number, tile: Tile): void {
     this.matrix[y][x] = tile;
+  }
+
+  getTile(x: number, y: number): Tile {
+    return this.matrix[y][x];
   }
 }

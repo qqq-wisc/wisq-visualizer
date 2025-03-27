@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { Architecture, Mapping, Routing } from "../../types/MappingAndRouting";
 import {
   Coordinates,
-  findPathType,
+  setPathTypes,
   locaitonToCoordinate,
   tileLayoutFromRouting,
 } from "../TileLayoutParser";
@@ -60,7 +60,10 @@ test("Tile layout from routing test", () => {
   } as Coordinates;
   const targetQubitTile: Tile = {
     tileType: TileTypes.Qubit,
-    pathType: PathTypes.default,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
     id: 1,
   } as Tile;
   targetTileLayout.setTile(
@@ -83,7 +86,10 @@ test("Tile layout from routing test", () => {
   } as Coordinates;
   const targetPathTile: Tile = {
     tileType: TileTypes.T,
-    pathType: PathTypes.default,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
     id: 1,
   };
   targetTileLayout.setTile(
@@ -131,50 +137,154 @@ test("Location to Coordinate Test", () => {
 });
 
 test("Find path type test", () => {
-  {
-    // Test Control
-    const testQubitLocation: number = testMapping["0"];
-    // Path below the qubit
-    const testControlLocation: number =
-      testQubitLocation + testArchitecture.width;
-    const resultType: PathTypes = findPathType(
-      testControlLocation,
-      [0],
-      testArchitecture,
-      testMapping
-    );
-    const targetType: PathTypes = PathTypes.control;
-    expect(resultType).toEqual(targetType);
-  }
+  const testQubitLoc: number = 6;
+  const testMapping: Mapping = {
+    "0": 6,
+  } as Mapping;
+  const testQubitIdentifiers: number[] = [0];
+  const testLayout: TileLayout = new TileLayout(5, 5);
+  const { x: qubit_x, y: qubit_y } = locaitonToCoordinate(
+    testQubitLoc,
+    testArchitecture
+  );
+  const testQubit: Tile = {
+    tileType: TileTypes.Qubit,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
+    id: 0,
+  } as Tile;
+  testLayout.setTile(qubit_x, qubit_y, testQubit);
 
-  {
-    // Test Target
-    const testQubitLocation: number = testMapping["1"];
-    // Path to the right of the qubit
-    const testControlLocation: number = testQubitLocation + 1;
-    const resultType: PathTypes = findPathType(
-      testControlLocation,
-      [1],
-      testArchitecture,
-      testMapping
-    );
-    const targetType: PathTypes = PathTypes.target;
-    expect(resultType).toEqual(targetType);
-  }
+  const testControlBottom: Tile = {
+    tileType: TileTypes.CX,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
+    id: 1,
+  } as Tile;
+  testLayout.setTile(qubit_x, qubit_y + 1, testControlBottom);
+  setPathTypes(
+    testQubitIdentifiers,
+    testQubitLoc + 5, // down a row
+    testLayout,
+    testArchitecture,
+    testMapping
+  );
+  // Check all sides of the path qubit below the qubit
+  expect(testLayout.getTile(qubit_x, qubit_y + 1).topType).toBe(
+    PathTypes.control
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y + 1).bottomType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y + 1).rightType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y + 1).leftType).toBe(
+    PathTypes.default
+  );
 
-  {
-    // Test Default
-    const testQubitLocation: number = testMapping["0"];
-    // Path on the qubit's bottom right corner
-    const testControlLocation: number =
-      testQubitLocation + testMapping.width + 1;
-    const resultType: PathTypes = findPathType(
-      testControlLocation,
-      [1],
-      testArchitecture,
-      testMapping
-    );
-    const targetType: PathTypes = PathTypes.default;
-    expect(resultType).toEqual(targetType);
-  }
+  const testControlTop: Tile = {
+    tileType: TileTypes.CX,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
+    id: 2,
+  } as Tile;
+
+  testLayout.setTile(qubit_x, qubit_y - 1, testControlTop);
+  setPathTypes(
+    testQubitIdentifiers,
+    testQubitLoc - 5, // up a row
+    testLayout,
+    testArchitecture,
+    testMapping
+  );
+  // Check all sides of the path qubit above the qubit
+  expect(testLayout.getTile(qubit_x, qubit_y - 1).topType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y - 1).bottomType).toBe(
+    PathTypes.control
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y - 1).rightType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y - 1).leftType).toBe(
+    PathTypes.default
+  );
+
+  const testTargetLeft: Tile = {
+    tileType: TileTypes.CX,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
+    id: 3,
+  } as Tile;
+  testLayout.setTile(qubit_x - 1, qubit_y, testTargetLeft);
+  setPathTypes(
+    testQubitIdentifiers,
+    testQubitLoc - 1, // to the left
+    testLayout,
+    testArchitecture,
+    testMapping
+  );
+  // Check all sides of the path qubit to the left of the qubit
+  expect(testLayout.getTile(qubit_x - 1, qubit_y).topType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x - 1, qubit_y).bottomType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x - 1, qubit_y).rightType).toBe(
+    PathTypes.target
+  );
+  expect(testLayout.getTile(qubit_x - 1, qubit_y).leftType).toBe(
+    PathTypes.default
+  );
+
+  const testTargetRight: Tile = {
+    tileType: TileTypes.CX,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
+    id: 4,
+  } as Tile;
+  testLayout.setTile(qubit_x + 1, qubit_y, testTargetRight);
+  setPathTypes(
+    testQubitIdentifiers,
+    testQubitLoc + 1, // to the right
+    testLayout,
+    testArchitecture,
+    testMapping
+  );
+  // Check all sides of the path qubit to the right of the qubit
+  expect(testLayout.getTile(qubit_x + 1, qubit_y).topType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x + 1, qubit_y).bottomType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x + 1, qubit_y).rightType).toBe(
+    PathTypes.default
+  );
+  expect(testLayout.getTile(qubit_x + 1, qubit_y).leftType).toBe(
+    PathTypes.target
+  );
+
+  // finally check control qubit
+  expect(testLayout.getTile(qubit_x, qubit_y).bottomType).toBe(
+    PathTypes.control
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y).bottomType).toBe(
+    PathTypes.control
+  );
+  expect(testLayout.getTile(qubit_x, qubit_y).leftType).toBe(PathTypes.target);
+  expect(testLayout.getTile(qubit_x, qubit_y).rightType).toBe(PathTypes.target);
 });

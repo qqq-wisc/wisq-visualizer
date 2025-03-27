@@ -29,14 +29,6 @@ export function tileLayoutFromRouting(
     for (const pathLoc of route.path) {
       const { x, y } = locaitonToCoordinate(pathLoc, arch);
 
-      // get the path type
-      const pathType: PathTypes = findPathType(
-        pathLoc,
-        route.qubits,
-        arch,
-        map
-      );
-
       // Get the tile type
       let tileType: TileTypes = TileTypes.Empty;
       switch (route.op) {
@@ -55,10 +47,16 @@ export function tileLayoutFromRouting(
 
       const pathTile: Tile = {
         tileType: tileType,
-        pathType: pathType,
+        topType: PathTypes.default,
+        bottomType: PathTypes.default,
+        leftType: PathTypes.default,
+        rightType: PathTypes.default,
         id: route.id,
       } as Tile;
+
       layout.setTile(x, y, pathTile);
+      // Set the path types
+      setPathTypes(route.qubits, pathLoc, layout, arch, map);
     }
   }
 
@@ -88,7 +86,10 @@ function generateBase(
     const { x, y } = locaitonToCoordinate(map[key], arch);
     const qubitTile: Tile = {
       tileType: TileTypes.Qubit,
-      pathType: PathTypes.default,
+      topType: PathTypes.default,
+      bottomType: PathTypes.default,
+      leftType: PathTypes.default,
+      rightType: PathTypes.default,
       id: Number(key),
     } as Tile;
     layout.setTile(x, y, qubitTile);
@@ -99,7 +100,10 @@ function generateBase(
     const { x, y } = locaitonToCoordinate(magic_loc, arch);
     const magicTile: Tile = {
       tileType: TileTypes.Magic,
-      pathType: PathTypes.default,
+      topType: PathTypes.default,
+      bottomType: PathTypes.default,
+      leftType: PathTypes.default,
+      rightType: PathTypes.default,
       id: null,
     } as Tile;
     layout.setTile(x, y, magicTile);
@@ -115,13 +119,16 @@ export function locaitonToCoordinate(
   return { x: x_cord, y: y_cord } as Coordinates;
 }
 
-export function findPathType(
-  pathLoc: number,
+export function setPathTypes(
   qubitIdentifiers: number[],
+  tileLocation: number,
+  tileLayout: TileLayout,
   arch: Architecture,
   map: Mapping
-): PathTypes {
-  const { x: path_x, y: path_y } = locaitonToCoordinate(pathLoc, arch);
+): void {
+  const { x: path_x, y: path_y } = locaitonToCoordinate(tileLocation, arch);
+
+  // Check only the qubits in the path
   for (const qubitIdentifier of qubitIdentifiers) {
     // find the coordinates of the qubit
     const qubitLocation: number = map[String(qubitIdentifier)];
@@ -130,17 +137,42 @@ export function findPathType(
       arch
     );
 
-    // make sure it is on the same x and their y is within 1 tile
-    const vertical_close: boolean = Math.abs(qubit_y - path_y) === 1;
-    if (path_x === qubit_x && vertical_close) {
-      return PathTypes.control;
+    // Check if qubit is above the tile
+    if (qubit_x === path_x && qubit_y === path_y - 1) {
+      console.log("BOTTOM");
+      // Change upper border of the path tile to control
+      tileLayout.getTile(path_x, path_y).topType = PathTypes.control;
+      // Change lower border of the qubit tile to control
+      tileLayout.getTile(qubit_x, qubit_y).bottomType = PathTypes.control;
+      continue;
     }
 
-    // make sure it is on the same y and their x is within 1 tile
-    const horizontal_close: boolean = Math.abs(qubit_x - path_x) === 1;
-    if (path_y === qubit_y && horizontal_close) {
-      return PathTypes.target;
+    // Check if qubit is below the tile
+    if (qubit_x === path_x && qubit_y === path_y + 1) {
+      console.log("TOP");
+      // Change upper border of the path tile to control
+      tileLayout.getTile(path_x, path_y).bottomType = PathTypes.control;
+      // Change lower border of the qubit tile to control
+      tileLayout.getTile(qubit_x, qubit_y).topType = PathTypes.control;
+      continue;
+    }
+
+    // Check if qubit is to the left of the tile
+    if (qubit_x === path_x - 1 && qubit_y === path_y) {
+      // Change upper border of the path tile to control
+      tileLayout.getTile(path_x, path_y).leftType = PathTypes.target;
+      // Change lower border of the qubit tile to control
+      tileLayout.getTile(qubit_x, qubit_y).rightType = PathTypes.target;
+      continue;
+    }
+
+    // Check if qubit is to the right of the tile
+    if (qubit_x === path_x + 1 && qubit_y === path_y) {
+      // Change upper border of the path tile to control
+      tileLayout.getTile(path_x, path_y).rightType = PathTypes.target;
+      // Change lower border of the qubit tile to control
+      tileLayout.getTile(qubit_x, qubit_y).leftType = PathTypes.target;
+      continue;
     }
   }
-  return PathTypes.default;
 }

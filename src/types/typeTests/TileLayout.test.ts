@@ -7,7 +7,10 @@ test("Test Constructor Blank Tile", () => {
   const ResultLayout: TileLayout = new TileLayout(width, height);
   const TargetTile: Tile = {
     tileType: TileTypes.Empty,
-    pathType: PathTypes.default,
+    topType: PathTypes.default,
+    bottomType: PathTypes.default,
+    leftType: PathTypes.default,
+    rightType: PathTypes.default,
     id: 0,
   } as Tile;
 
