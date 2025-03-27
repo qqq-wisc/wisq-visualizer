@@ -15,7 +15,7 @@ function tileToColor(tile: Tile): string {
     case TileTypes.Magic:
       return "bg-yellow-700";
     case TileTypes.CX:
-      return "bg-green-600";
+      return "bg-green-500";
     case TileTypes.T:
       return "bg-yellow-500";
     case TileTypes.TDG:
@@ -23,6 +23,25 @@ function tileToColor(tile: Tile): string {
     default:
       return "bg-white";
   }
+}
+
+function tileToBorder(tile: Tile): string {
+  // I unfortunately cannot store the colors in a variable because of tailwind's JIT compiler, apparently..
+  let border = "border-black border-2 ";
+
+  if (tile.topType === PathTypes.control)
+    border += "border-t-blue-500 border-t-4";
+
+  if (tile.bottomType === PathTypes.control)
+    border += "border-b-blue-500 border-b-4 ";
+
+  if (tile.leftType === PathTypes.target)
+    border += "border-l-red-500 border-l-4 ";
+
+  if (tile.rightType === PathTypes.target)
+    border += "border-r-red-500 border-r-4 ";
+
+  return border;
 }
 
 function tileToName(tile: Tile): React.JSX.Element {
@@ -42,34 +61,10 @@ function tileToName(tile: Tile): React.JSX.Element {
         </>
       );
     case TileTypes.CX:
-      if (tile.pathType === PathTypes.control)
-        return (
-          <>
-            C<sub>{tile.id}</sub>
-          </>
-        );
-      if (tile.pathType === PathTypes.target)
-        return (
-          <>
-            T<sub>{tile.id}</sub>
-          </>
-        );
       return <>{tile.id}</>;
     case TileTypes.T:
-      if (tile.pathType === PathTypes.control)
-        return (
-          <>
-            C<sub>{tile.id}</sub>
-          </>
-        );
       return <>{tile.id}</>;
     case TileTypes.TDG:
-      if (tile.pathType === PathTypes.control)
-        return (
-          <>
-            C<sub>{tile.id}</sub>
-          </>
-        );
       return <>{tile.id}</>;
     default:
       return <></>;
@@ -83,7 +78,7 @@ const TileElement: React.FC<TileProperties> = ({ tile, key }) => {
         key={key}
         className={`flex items-center justify-center w-full aspect-square 
                 ${tileToColor(tile)} 
-                text-black text-lg font-bold shadow-md border-2 border-black`}
+                text-black text-lg font-bold shadow-md ${tileToBorder(tile)}`}
       >
         {tileToName(tile)}
       </div>

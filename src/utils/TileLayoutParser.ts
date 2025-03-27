@@ -139,7 +139,6 @@ export function setPathTypes(
 
     // Check if qubit is above the tile
     if (qubit_x === path_x && qubit_y === path_y - 1) {
-      console.log("BOTTOM");
       // Change upper border of the path tile to control
       tileLayout.getTile(path_x, path_y).topType = PathTypes.control;
       // Change lower border of the qubit tile to control
@@ -149,7 +148,6 @@ export function setPathTypes(
 
     // Check if qubit is below the tile
     if (qubit_x === path_x && qubit_y === path_y + 1) {
-      console.log("TOP");
       // Change upper border of the path tile to control
       tileLayout.getTile(path_x, path_y).bottomType = PathTypes.control;
       // Change lower border of the qubit tile to control
