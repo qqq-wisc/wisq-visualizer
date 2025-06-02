@@ -24,7 +24,10 @@ const DropzoneComponent: React.FC<DropzoneProperties> = ({
         // Parse the file content as JSON
         const fileContent = reader.result as string;
         try {
-          const jsonData: MappingAndRouting = JSON.parse(fileContent);
+          const jsonData: MappingAndRouting = {
+            gates: [],
+            ...JSON.parse(fileContent),
+          } as MappingAndRouting;
           const newFile: MRFile = {
             mappingAndRouting: jsonData,
             name: file.name,

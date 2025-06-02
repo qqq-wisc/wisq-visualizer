@@ -8,7 +8,7 @@ import {
 } from "../types/MappingAndRouting";
 import { type Edge, type Node } from "@xyflow/react";
 
-const positionMultiplier: number = 100;
+export const positionMultiplier: number = 100;
 
 function createQubitNodes(mapping: Mapping): Node[] {
   let nodes: Node[] = [];
@@ -36,7 +36,8 @@ function gateNodeToNode(node: GateNode): Node {
     data: {
       label: `${node.id}`,
       type:
-        node.parents.length == 0 ? NodeType.EXECUTABLE : NodeType.UNEXECUTABLE,
+        // node.parents.length == 0 ? NodeType.EXECUTABLE : NodeType.UNEXECUTABLE,
+        NodeType.UNEXECUTABLE,
     } as NodeData,
     position: {
       x: node.gate[0] * positionMultiplier,
@@ -64,7 +65,8 @@ export function generateGateDag(gates: Gate[], mapping: Mapping): GateDAG {
     Object.keys(mapping).length
   ).fill(null);
   let dag: GateDAG = new GateDAG();
-  let edgeCounter: number[] = new Array(Object.keys(mapping).length).fill(0);
+  dag.qubits = Object.keys(mapping).length;
+  let edgeCounter: number[] = new Array(dag.qubits).fill(0);
   dag.nodes.push(...createQubitNodes(mapping));
 
   gates.forEach((gate, i) => {
@@ -82,7 +84,7 @@ export function generateGateDag(gates: Gate[], mapping: Mapping): GateDAG {
       dag.nodes.push(gateNodeToNode(currentNode));
       return;
     }
-    console.log(gate.every((qubit) => qubitTable[qubit] === null));
+    // console.log(gate.every((qubit) => qubitTable[qubit] === null));
 
     // Adjust qubit table for each qubit
     gate.forEach((qubit, i) => {

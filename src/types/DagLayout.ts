@@ -36,12 +36,14 @@ export class GateDAG {
   nodes: Node[];
   edges: Edge[];
   totalDepth: number;
+  qubits: number;
 
   constructor() {
     this.roots = [];
     this.nodes = [];
     this.edges = [];
     this.totalDepth = 0;
+    this.qubits = 0;
   }
 
   updateRoots(newRoot: GateNode) {

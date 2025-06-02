@@ -49,7 +49,11 @@ function App() {
       })
       .then((response) => response.json() as Promise<MappingAndRouting>)
       .then((result) => {
-        handleMappingAndRoutingUpdate(result);
+        const format_result: MappingAndRouting = {
+          ...result,
+          gates: result.gates ?? [],
+        } as MappingAndRouting;
+        handleMappingAndRoutingUpdate(format_result);
         setLoading(false);
       })
       .catch((err) => {
