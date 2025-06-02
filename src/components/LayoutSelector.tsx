@@ -27,7 +27,7 @@ const LayoutSelector: React.FC<LayoutSelectorProperties> = ({
   const presets: string[] = [
     "3_17_13",
     "continuous_3_17_13_compact",
-    "qft_20_scmr",
+    "qft_20_sparse",
   ];
 
   const [isOpen, setIsOpen] = useState<boolean>(false);

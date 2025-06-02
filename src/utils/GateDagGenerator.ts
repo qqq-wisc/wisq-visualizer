@@ -1,10 +1,7 @@
 import { GateDAG, GateNode, NodeData, NodeType } from "../types/DagLayout";
 import {
-  Routing,
-  Architecture,
   Mapping,
   Gate,
-  MappingAndRouting,
 } from "../types/MappingAndRouting";
 import { type Edge, type Node } from "@xyflow/react";
 
@@ -75,7 +72,7 @@ export function generateGateDag(gates: Gate[], mapping: Mapping): GateDAG {
     // Check if the qubit is a root
     if (gate.every((qubit) => qubitTable[qubit] === null)) {
       dag.updateRoots(currentNode);
-      gate.forEach((qubit, i) => {
+      gate.forEach((qubit) => {
         qubitTable[qubit] = currentNode;
         dag.edges.push(
           createEdge(`Q${qubit}`, currentNode.id.toString(), qubit, edgeCounter)
@@ -87,7 +84,7 @@ export function generateGateDag(gates: Gate[], mapping: Mapping): GateDAG {
     // console.log(gate.every((qubit) => qubitTable[qubit] === null));
 
     // Adjust qubit table for each qubit
-    gate.forEach((qubit, i) => {
+    gate.forEach((qubit) => {
       // Check if the qubit has been used yet
       if (qubitTable[qubit] === null) {
         qubitTable[qubit] = currentNode;
@@ -127,7 +124,7 @@ export function updateExecutableSet(
     (node) => node !== executingNode
   );
 
-  executingNode.children.forEach((child, i) => {
+  executingNode.children.forEach((child) => {
     // a child node is executable if every one of it's parents have been executed
     const validParents: boolean = child.parents.every((parent) =>
       executed.has(parent)

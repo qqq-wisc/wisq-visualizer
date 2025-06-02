@@ -1,24 +1,18 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  Handle,
   ReactFlow,
-  Position,
   ReactFlowProvider,
   useNodesState,
   Node,
   useReactFlow,
   useViewport,
-  Viewport,
   FitViewOptions,
-  FitBoundsOptions,
-  SetCenterOptions,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 import { GateDAG, NodeType } from "../types/DagLayout";
 import GateGraphNode from "./GateGraphNode";
 import { TileLayout } from "../types/TileLayout";
-import { positionMultiplier } from "../utils/GateDagGenerator";
 
 interface GateGraphProperties {
   gateDag: GateDAG;
@@ -26,16 +20,16 @@ interface GateGraphProperties {
 }
 
 const GateGraphInner: React.FC<GateGraphProperties> = ({ gateDag, layout }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(gateDag.nodes);
+  const [nodes, setNodes] = useNodesState(gateDag.nodes);
   const [previousNodes, setPreviousNodes] = useState<Set<String>>(new Set());
-  const { setViewport, getZoom, getViewport, fitView, setCenter } =
+  const { fitView, } =
     useReactFlow();
-  const { x, y, zoom } = useViewport();
+  const { zoom } = useViewport();
 
   useEffect(() => {
     const layoutIds = new Set(layout.ids.map(String));
     let addNodes: Node[] = [];
-    setNodes((nds) => {
+    setNodes(() => {
       return gateDag.nodes.map((node) => {
         if (previousNodes.has(node.id) || layoutIds.has(node.id)) {
           let type: NodeType = NodeType.UNEXECUTABLE;

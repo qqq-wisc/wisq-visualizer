@@ -42,7 +42,7 @@ function App() {
 
   // resol ve the mapping and routing promise
   useEffect(() => {
-    fetch("/wisq-visualizer/out.json")
+    fetch("/wisq-visualizer/3_17_13.json")
       .then((response) => {
         console.log(response);
         return response;
