@@ -25,6 +25,7 @@ export interface Tile {
 export class TileLayout {
   width: number;
   height: number;
+  ids: number[];
   matrix: Array<Array<Tile>>;
 
   constructor(width: number, height: number) {
@@ -32,6 +33,7 @@ export class TileLayout {
       throw new Error("Width and height must be greater than 0");
     }
 
+    this.ids = []
     this.width = width;
     this.height = height;
     this.matrix = Array.from({ length: height }, () =>
@@ -44,6 +46,10 @@ export class TileLayout {
         id: 0,
       } as Tile)
     );
+  }
+
+  addId(id: number): void {
+    this.ids.push(id);
   }
 
   setTile(x: number, y: number, tile: Tile): void {

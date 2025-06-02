@@ -1,5 +1,6 @@
 export interface MappingAndRouting {
   map: Mapping;
+  gates: Gate[];
   steps: Routing[][];
   arch: Architecture;
 }
@@ -21,6 +22,12 @@ export interface Architecture {
   alg_qubits: number[];
   magic_states: number[];
 }
+
+export type Gate = SingleQubit | DoubleQubit;
+// export type Gate = number[];
+
+export type SingleQubit = [number];
+export type DoubleQubit = [number, number];
 
 // Used to save uploaded files
 export interface MRFile {

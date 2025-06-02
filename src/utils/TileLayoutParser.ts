@@ -18,6 +18,7 @@ export function tileLayoutFromRouting(
 
   // generate routing
   for (const route of routing) {
+    layout.addId(route.id);
     for (const qubitIdentifier of route.qubits) {
       const { x, y } = locaitonToCoordinate(map[String(qubitIdentifier)], arch);
       const qubitTile: Tile = {

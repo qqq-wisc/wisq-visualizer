@@ -32,7 +32,7 @@ const SliderComponent: React.FC<SliderComponentProperties> = ({
 
   return (
     <>
-      <div className="flex items-center columns-3">
+      <div className="flex items-center columns-4">
         {/* Increment */}
         <button
           onClick={decrement}
@@ -60,6 +60,7 @@ const SliderComponent: React.FC<SliderComponentProperties> = ({
         >
           <strong>+</strong>
         </button>
+        <p>{maxSize}</p>
       </div>
     </>
   );

@@ -4,9 +4,10 @@ import { PathTypes, Tile, TileTypes } from "../types/TileLayout";
 interface TileProperties {
   tile: Tile;
   key: number;
+  color: string;
 }
 
-function tileToColor(tile: Tile): string {
+function tileToColor(tile: Tile, color: string): string {
   switch (tile.tileType) {
     case TileTypes.Empty:
       return "bg-white";
@@ -15,11 +16,11 @@ function tileToColor(tile: Tile): string {
     case TileTypes.Magic:
       return "bg-yellow-700";
     case TileTypes.CX:
-      return "bg-green-500";
+      return color;
     case TileTypes.T:
-      return "bg-yellow-500";
+      return color;
     case TileTypes.TDG:
-      return "bg-yellow-200";
+      return color;
     default:
       return "bg-white";
   }
@@ -71,13 +72,13 @@ function tileToName(tile: Tile): React.JSX.Element {
   }
 }
 
-const TileElement: React.FC<TileProperties> = ({ tile, key }) => {
+const TileElement: React.FC<TileProperties> = ({ tile, key, color }) => {
   return (
     <>
       <div
         key={key}
-        className={`flex items-center justify-center w-full aspect-square 
-                ${tileToColor(tile)} 
+        className={`flex items-center justify-center min-w-[2rem] min-h-[2rem]  aspect-square 
+                ${tileToColor(tile, color)} 
                 text-black text-lg font-bold shadow-md ${tileToBorder(tile)}`}
       >
         {tileToName(tile)}

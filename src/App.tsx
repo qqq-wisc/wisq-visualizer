@@ -6,8 +6,14 @@ import { tileLayoutFromRouting } from "./utils/TileLayoutParser";
 import { MappingAndRouting } from "./types/MappingAndRouting";
 import SliderComponent from "./components/SliderComponent";
 import LayoutSelectionBar from "./components/LayoutSelectionBar";
+import GateGraph from "./components/GateGraph";
+import { GateDAG } from "./types/DagLayout";
+import { generateGateDag } from "./utils/GateDagGenerator";
 
 function App() {
+  // set the view type
+  const [viewType, setViewType] = useState<number>(0);
+  const changeView = () => setViewType((viewType + 1) % 3);
 
   // hold the slider state
   const [layerMax, setLayerMax] = useState<number>(0);
@@ -27,6 +33,11 @@ function App() {
           mappingAndRouting.map
         )
       : new TileLayout(5, 5)
+  );
+  const [dag, setDag] = useState<GateDAG>(
+    mappingAndRouting != null
+      ? generateGateDag(mappingAndRouting.gates, mappingAndRouting.map)
+      : new GateDAG()
   );
 
   // resol ve the mapping and routing promise
@@ -52,6 +63,7 @@ function App() {
   const handleMappingAndRoutingUpdate = (result: MappingAndRouting) => {
     setMappingAndRouting(result);
     setLayout(tileLayoutFromRouting(result.steps[0], result.arch, result.map));
+    setDag(generateGateDag(result.gates, result.map));
     setLayerMax(result.steps.length - 1);
   };
 
@@ -69,28 +81,40 @@ function App() {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="w-3/7 grid grid-cols-1 items-center">
+      <div className="flex flex-col justify-center h-screen w-screen bg-gray-100 overflow-hidden">
+        <div className=" w-[60%] mx-auto">
           <LayoutSelectionBar
             onUpload={handleMappingAndRoutingUpdate}
             setError={setError}
             setLoading={setLoading}
+            changeView={changeView}
           />
-          <div className="">
-            {loading ? (
-              <p>Loading ...</p>
-            ) : error ? (
-              <p>Error: {error.message} </p>
-            ) : (
-              <QubitGrid layout={layout} />
-            )}
-          </div>
-          <div className="mb-4">
-            <SliderComponent
-              onSliderChange={handleSliderUpdate}
-              maxSize={layerMax}
-            />
-          </div>
+        </div>
+        <div className="flex-1 min-h-0 relative w-full">
+          {loading ? (
+            <p>Loading ...</p>
+          ) : error ? (
+            <p>Error: {error.message} </p>
+          ) : viewType == 0 ? (
+            <QubitGrid layout={layout} sizePercentage={0.9} />
+          ) : viewType == 1 ? (
+            <GateGraph gateDag={dag} layout={layout} />
+          ) : (
+            <div className="flex h-full">
+              <div className="w-1/2 relative">
+                <QubitGrid layout={layout} sizePercentage={0.9} />
+              </div>
+              <div className="w-1/2 relative">
+                <GateGraph gateDag={dag} layout={layout} />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="p-3 w-[60%] mx-auto">
+          <SliderComponent
+            onSliderChange={handleSliderUpdate}
+            maxSize={layerMax}
+          />
         </div>
       </div>
     </>

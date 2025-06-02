@@ -1,0 +1,40 @@
+import React from "react";
+import { Handle, Position, ReactFlow } from "@xyflow/react";
+import { NodeData, NodeType } from "../types/DagLayout";
+
+interface GateGraphNodeProperties {
+  data: NodeData;
+}
+
+const tileToColor = (data: NodeData) => {
+  switch (data.type) {
+    case NodeType.EXECUTED:
+      return "bg-gray-300";
+    case NodeType.UNEXECUTABLE:
+      return "bg-white";
+    case NodeType.EXECUTABLE:
+      return "bg-red-300";
+    case NodeType.QUBITSTART:
+      return "bg-blue-200";
+    default:
+      return "bg-white";
+  }
+};
+
+const GateGraphNode: React.FC<GateGraphNodeProperties> = ({ data }) => {
+  return (
+    <>
+      <Handle type="target" position={Position.Top} />
+      <div
+        className={`w-16 h-16 rounded-full border-2 border-gray-500 ${tileToColor(
+          data
+        )} flex items-center justify-center`}
+      >
+        <p>{data.label}</p>
+      </div>
+      <Handle type="source" position={Position.Bottom} />
+    </>
+  );
+};
+
+export default GateGraphNode;
